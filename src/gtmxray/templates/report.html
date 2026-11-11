@@ -1,0 +1,302 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTM X-Ray</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f6f7f9; --panel:#ffffff; --panel2:#f0f2f5; --ink:#0d1117; --muted:#5b6472; --line:#e3e6eb;
+  --accent:#0891b2; --accent2:#7c3aed; --good:#059669; --warn:#d97706; --bad:#dc2626; --glow:rgba(8,145,178,.12);
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#07090d; --panel:#0e131a; --panel2:#141b24; --ink:#e8edf3; --muted:#8b97a7; --line:#1e2733;
+  --accent:#22d3ee; --accent2:#a78bfa; --good:#34d399; --warn:#fbbf24; --bad:#f87171; --glow:rgba(34,211,238,.10);
+}}
+:root[data-theme="dark"]{
+  --bg:#07090d; --panel:#0e131a; --panel2:#141b24; --ink:#e8edf3; --muted:#8b97a7; --line:#1e2733;
+  --accent:#22d3ee; --accent2:#a78bfa; --good:#34d399; --warn:#fbbf24; --bad:#f87171; --glow:rgba(34,211,238,.10);
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.55 Inter,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 80px}
+header.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:22px}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;letter-spacing:.02em}
+.brand .dot{width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 18px var(--accent)}
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:999px;border:1px solid var(--line);
+  color:var(--muted);font-size:12px;background:var(--panel)}
+button.pill{cursor:pointer}
+.hero{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:18px;padding:28px;
+  background:radial-gradient(900px 300px at 85% -10%,var(--glow),transparent),var(--panel)}
+.hero h1{font-size:clamp(28px,4.4vw,46px);line-height:1.05;margin:6px 0 10px;letter-spacing:-.02em}
+.hero .verdict{font-size:18px;color:var(--ink);max-width:760px}
+.hero-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;align-items:center}
+@media (max-width:860px){.hero-grid{grid-template-columns:1fr}}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(132px,1fr));gap:10px;margin-top:20px}
+.kpi{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
+.kpi .v{font-size:26px;font-weight:800;letter-spacing:-.02em}
+.kpi .l{font-size:12px;color:var(--muted)}
+nav.toc{position:sticky;top:0;z-index:5;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);
+  display:flex;gap:6px;overflow-x:auto;padding:10px 0;margin:18px 0 6px;border-bottom:1px solid var(--line)}
+nav.toc a{white-space:nowrap;font-size:13px;color:var(--muted);padding:4px 10px;border-radius:8px}
+nav.toc a:hover{background:var(--panel2);color:var(--ink);text-decoration:none}
+section{margin-top:34px}
+section > h2{font-size:22px;margin:0 0 4px;letter-spacing:-.01em;display:flex;align-items:center;gap:10px}
+section > h2 .n{font:600 12px "JetBrains Mono",monospace;color:var(--accent);border:1px solid var(--line);padding:2px 7px;border-radius:6px}
+section > p.sub{margin:0 0 16px;color:var(--muted)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px} .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:860px){.grid2,.grid3{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;min-width:0}
+.card h3{margin:0 0 10px;font-size:15px}
+.bar{display:grid;grid-template-columns:150px 1fr 44px;gap:10px;align-items:center;font-size:13px;margin:6px 0}
+.bar .t{height:9px;border-radius:5px;background:var(--panel2);overflow:hidden}
+.bar .f{height:100%;border-radius:5px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.bar .k{text-align:right;font-family:"JetBrains Mono",monospace;color:var(--muted)}
+.bar .lab{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:12px;padding:4px 9px;border-radius:8px;background:var(--panel2);border:1px solid var(--line)}
+.chip b{color:var(--accent);font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:9px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+.tbl{overflow-x:auto}
+.tag{font:600 10px "JetBrains Mono",monospace;padding:2px 6px;border-radius:5px;letter-spacing:.04em}
+.tag.SEEN{background:color-mix(in srgb,var(--good) 18%,transparent);color:var(--good)}
+.tag.INFERRED{background:color-mix(in srgb,var(--warn) 18%,transparent);color:var(--warn)}
+.tag.EST{background:color-mix(in srgb,var(--accent2) 18%,transparent);color:var(--accent2)}
+.play{border-left:3px solid var(--accent);padding:14px 16px;background:var(--panel);border-radius:0 12px 12px 0;border-top:1px solid var(--line);border-right:1px solid var(--line);border-bottom:1px solid var(--line);margin-bottom:12px}
+.play h4{margin:0 0 6px;font-size:16px}
+.play .why{color:var(--muted);margin:0 0 10px}
+.email{white-space:pre-wrap;background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px;font-size:13px;margin-top:8px}
+.ev{cursor:pointer;font:600 10px "JetBrains Mono",monospace;color:var(--accent);border:1px solid var(--line);border-radius:5px;padding:1px 5px;margin-left:4px;vertical-align:1px}
+.timeline{position:relative;padding-left:22px}
+.timeline:before{content:"";position:absolute;left:6px;top:4px;bottom:4px;width:2px;background:var(--line)}
+.tl{position:relative;margin-bottom:14px}
+.tl:before{content:"";position:absolute;left:-21px;top:6px;width:12px;height:12px;border-radius:50%;background:var(--accent);box-shadow:0 0 0 4px var(--glow)}
+.tl .y{font:600 12px "JetBrains Mono",monospace;color:var(--accent)}
+.muted{color:var(--muted)} .small{font-size:12px}
+.gauge{display:flex;align-items:center;gap:16px}
+.drawer{position:fixed;right:16px;bottom:16px;max-width:520px;width:calc(100% - 32px);background:var(--panel);border:1px solid var(--accent);
+  border-radius:14px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.35);display:none;z-index:20}
+.drawer.on{display:block}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+input.search{background:var(--panel2);border:1px solid var(--line);color:var(--ink);border-radius:8px;padding:6px 10px;font:inherit;font-size:13px;min-width:220px}
+.bc{display:grid;grid-template-columns:1fr 1fr;gap:14px} @media (max-width:860px){.bc{grid-template-columns:1fr}}
+.bc ul{margin:0;padding-left:18px} .bc li{margin:4px 0}
+footer{margin-top:50px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:16px}
+/* social cards */
+.cards{display:none}
+body.cardmode .wrap>*:not(.cards){display:none} body.cardmode .cards{display:block}
+.social{width:1200px;height:675px;margin:0 0 24px;border-radius:0;padding:56px 64px 90px;position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:center;
+  background:radial-gradient(800px 400px at 90% 0%,rgba(34,211,238,.18),transparent),#07090d;color:#e8edf3;font-family:Inter}
+.social .k{position:absolute;top:56px;left:64px;font:600 18px "JetBrains Mono";color:#22d3ee;letter-spacing:.08em;text-transform:uppercase}
+.social .big{font-size:120px;font-weight:800;letter-spacing:-.04em;line-height:1;margin:18px 0 8px}
+.social .h{font-size:44px;font-weight:800;line-height:1.1;letter-spacing:-.02em;max-width:1000px}
+.social .s{font-size:24px;color:#8b97a7;margin-top:14px;max-width:1000px}
+.social .foot{position:absolute;left:64px;right:64px;bottom:40px;display:flex;justify-content:space-between;font:500 18px "JetBrains Mono";color:#8b97a7}
+.social .rows{margin-top:26px;font-size:28px;line-height:1.55}
+.social .rows b{color:#22d3ee}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><span class="dot"></span><span>GTM X-RAY</span><span class="pill mono" id="date"></span></div>
+    <div style="display:flex;gap:6px">
+      <button class="pill" id="theme">Theme</button>
+      <a class="pill" id="csv" href="clay-import.csv">Clay CSV</a>
+      <button class="pill" onclick="window.print()">PDF</button>
+    </div>
+  </header>
+
+  <div class="hero">
+    <div class="hero-grid">
+      <div>
+        <span class="pill mono" id="mode">COMPETITOR TEARDOWN</span>
+        <h1 id="title"></h1>
+        <div class="verdict" id="verdict"></div>
+      </div>
+      <div style="display:flex;justify-content:center"><svg id="radar" width="320" height="300" viewBox="0 0 320 300" role="img" aria-label="GTM motion radar"></svg></div>
+    </div>
+    <div class="kpis" id="kpis"></div>
+  </div>
+
+  <nav class="toc" id="toc"></nav>
+  <div id="sections"></div>
+
+  <div class="cards" id="cards"></div>
+  <footer>
+    Built with <b>GTM X-Ray</b> · Every claim links to a public source. <span class="tag SEEN">SEEN</span> = read straight off a public source.
+    <span class="tag INFERRED">INFERRED</span> = a conclusion drawn from SEEN facts. <span class="tag EST">ESTIMATE</span> = arithmetic with stated assumptions.
+    Public data only: no logins, no private APIs, no form submissions.
+  </footer>
+</div>
+<div class="drawer" id="drawer"></div>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const F = D.facts || {}, A = D.analysis || {}, L = D.ledger || [], ACC = D.accounts || [];
+const byId = Object.fromEntries(L.map(r => [r.id, r]));
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const fmt = n => (n ?? 0).toLocaleString('en-US');
+const ev = ids => (ids || []).filter(i => byId[i]).map(i => `<span class="ev" data-ev="${i}">src</span>`).join('');
+
+// theme
+(() => { let t = null; try { t = localStorage.getItem('xray-theme'); } catch(e){}
+  if (t) document.documentElement.dataset.theme = t;
+  $('#theme').onclick = () => { const cur = document.documentElement.dataset.theme ||
+      (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const nx = cur === 'dark' ? 'light' : 'dark'; document.documentElement.dataset.theme = nx;
+    try { localStorage.setItem('xray-theme', nx); } catch(e){} }; })();
+
+const H = F.hiring || {}, S = F.sitemap || {}, P = F.pagesource || {}, O = F.outbound || {}, W = F.wayback || {},
+      N = F.dns || {}, WEB = F.web || {}, CAP = F.outbound_capacity || {}, LS = F.leak_score || {}, R = F.motion_radar || {};
+$('#date').textContent = (F.collected_at || '').slice(0, 10);
+$('#title').textContent = A.headline || `${F.domain}: the go-to-market, X-rayed`;
+$('#verdict').innerHTML = esc(A.verdict || 'Collected public evidence below. Run the strategist agent to add the verdict and attack plan.');
+if (D.audit) $('#mode').textContent = 'GTM AUDIT · PREPARED FOR ' + (F.domain || '').toUpperCase();
+document.title = `${F.domain} · GTM X-Ray`;
+
+// KPIs
+const tools = new Set([...(N.tools_from_txt||[]), ...Object.keys(P.tools||{}), ...(WEB.tools_from_network||[])]);
+const kpis = [
+  [fmt(H.open_roles), 'open roles'],
+  [H.open_roles ? Math.round((H.gtm_share||0)*100)+'%' : '–', 'of hiring is sales + marketing'],
+  [fmt((O.owned_sending_domains||[]).filter(o=>(o.kind||'').startsWith('lookalike') && o.wired_for_email !== false).length), 'cold email domains'],
+  [fmt(S.url_count), 'pages in sitemap'],
+  [fmt(Object.keys(S.comparison_targets||{}).length), 'rivals targeted by pages'],
+  [fmt(tools.size), 'tools fingerprinted'],
+  [(LS.score ?? '–') + '/100', 'GTM leak score'],
+];
+$('#kpis').innerHTML = kpis.map(([v,l]) => `<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join('');
+
+// radar
+(() => { const svg = $('#radar'), keys = Object.keys(R); if (!keys.length) return;
+  const cx=160, cy=150, r=105, n=keys.length, pt=(i,v)=>{const a=-Math.PI/2+i*2*Math.PI/n;return [cx+Math.cos(a)*r*v/100, cy+Math.sin(a)*r*v/100]};
+  let g=''; [25,50,75,100].forEach(v=>{g+=`<polygon points="${keys.map((_,i)=>pt(i,v).join(',')).join(' ')}" fill="none" stroke="var(--line)"/>`});
+  keys.forEach((k,i)=>{const [x,y]=pt(i,100), [lx,ly]=pt(i,122); g+=`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="var(--line)"/>`+
+    `<text x="${lx}" y="${ly}" fill="var(--muted)" font-size="11" text-anchor="middle" dominant-baseline="middle">${esc(k)}</text>`});
+  g+=`<polygon points="${keys.map((k,i)=>pt(i,Math.max(R[k],4)).join(',')).join(' ')}" fill="var(--accent)" fill-opacity=".22" stroke="var(--accent)" stroke-width="2"/>`;
+  keys.forEach((k,i)=>{const [x,y]=pt(i,Math.max(R[k],4)); g+=`<circle cx="${x}" cy="${y}" r="3.5" fill="var(--accent)"><title>${esc(k)}: ${R[k]}</title></circle>`});
+  svg.innerHTML = g; })();
+
+const bars = (obj, max) => { const e = Object.entries(obj||{}); const m = max || Math.max(1, ...e.map(x=>x[1]));
+  return e.map(([k,v]) => `<div class="bar"><span class="lab" title="${esc(k)}">${esc(k)}</span><div class="t"><div class="f" style="width:${(v/m*100).toFixed(1)}%"></div></div><span class="k">${fmt(v)}</span></div>`).join('') || '<p class="muted small">No data.</p>'; };
+const chips = arr => `<div class="chips">${(arr||[]).map(x => `<span class="chip">${x}</span>`).join('') || '<span class="muted small">None found.</span>'}</div>`;
+
+const secs = [];
+const add = (id, title, sub, html) => secs.push({id, title, sub, html});
+
+// 1 Attack plan
+if (A.attack_plan && A.attack_plan.length) {
+  add('attack', 'Attack plan', 'How to take their customers. Every play is built on evidence from this report.',
+    A.attack_plan.map(p => `<div class="play"><h4>${esc(p.name)} ${ev(p.evidence)}</h4><p class="why">${esc(p.why)}</p>
+      ${p.who ? `<div class="small"><b>Who:</b> ${esc(p.who)}</div>` : ''}
+      ${p.trigger ? `<div class="small"><b>Trigger:</b> ${esc(p.trigger)}</div>` : ''}
+      ${p.steps ? `<ol class="small">${p.steps.map(s=>`<li>${esc(s)}</li>`).join('')}</ol>` : ''}
+      ${(p.sequence||[]).map((e,i)=>`<div class="email"><b>Email ${i+1}${e.subject?' · '+esc(e.subject):''}</b>\n${esc(e.body)}</div>`).join('')}</div>`).join(''));
+}
+// 2 Displacement
+if (ACC.length) {
+  add('accounts', 'Displacement targets', `${ACC.length} accounts with public evidence of using ${esc(F.domain)}. Ranked by number of independent sources.`,
+    `<div class="card tbl"><table><thead><tr><th>#</th><th>Account</th><th>Evidence</th><th>Why now</th><th>Score</th></tr></thead><tbody>${
+      ACC.slice(0,60).map((a,i)=>`<tr><td class="mono">${i+1}</td><td><b>${esc(a.company)}</b></td><td>${a.sources.map(s=>`<span class="chip">${esc(s)}</span>`).join(' ')} ${
+        (a.evidence_urls||[]).slice(0,2).map(u=>`<a href="${esc(u)}" target="_blank" rel="noopener">link</a>`).join(' ')}</td><td class="small">${esc((a.why_now||[]).join(' · '))}</td><td class="mono">${a.score}</td></tr>`).join('')
+    }</tbody></table></div><p class="small muted">Full list in <a href="clay-import.csv">clay-import.csv</a>, ready to import into a Clay table.</p>`);
+}
+// 3 Hiring
+if (H.open_roles) {
+  add('hiring', 'Hiring = roadmap', `${fmt(H.open_roles)} open roles on their public ${esc(H.ats)} feed. Where the headcount goes is where the company is going.`,
+    `<div class="grid3"><div class="card"><h3>By function</h3>${bars(H.by_dept)}</div>
+     <div class="card"><h3>Sales team shape</h3>${bars(H.sales_roles)}</div>
+     <div class="card"><h3>GTM roles by region</h3>${bars(H.gtm_by_region)}</div></div>
+     <div class="grid2" style="margin-top:14px"><div class="card"><h3>Roadmap signals</h3>${
+       (A.predictions||[]).map(p=>`<p><span class="tag INFERRED">INFERRED</span> ${esc(p.text)} ${ev(p.evidence)}</p>`).join('') ||
+       (H.roadmap||[]).map(r=>`<p><span class="tag INFERRED">INFERRED</span> <b>${esc(r.signal)}</b>: ${esc(r.detail)}</p>`).join('') || '<p class="muted">No roadmap signals.</p>'}</div>
+     <div class="card"><h3>Tools named in their own job posts</h3>${bars(H.tools_in_jds)}
+       <h3 style="margin-top:14px">Segments in titles</h3>${bars(H.by_segment)}</div></div>
+     <div class="card tbl" style="margin-top:14px"><h3>Newest roles</h3><table><tbody>${(H.newest||[]).map(r=>`<tr><td class="mono small">${esc(r.published)}</td><td><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.title)}</a></td><td class="small muted">${esc(r.location)}</td><td><span class="chip">${esc(r.dept)}</span></td></tr>`).join('')}</tbody></table></div>`);
+}
+// 4 Outbound forensics
+add('outbound', 'Outbound forensics', 'Lookalike domains that accept email and redirect to the main site, the classic cold-email setup.',
+  `<div class="grid2"><div class="card tbl"><h3>Secondary domains they own</h3><table><thead><tr><th>Domain</th><th>Type</th><th>Mailbox</th><th>Tracking</th></tr></thead><tbody>${
+    (O.owned_sending_domains||[]).map(o=>`<tr><td class="mono">${esc(o.domain)}</td><td class="small">${esc(o.kind||'')}</td><td class="small">${esc(o.mailbox_provider||'?')}</td><td class="small">${esc(Object.values(o.tracking||{}).join(', ')||'–')}</td></tr>`).join('') ||
+    '<tr><td colspan="4" class="muted">None found among the '+fmt(O.candidates_checked)+' candidates checked.</td></tr>'}</tbody></table>
+    <p class="small muted">${fmt(O.candidates_checked)} name variants checked · ${fmt(O.candidates_with_mx)} accept mail · only domains that redirect to ${esc(F.domain)} are counted as theirs.</p></div>
+   <div class="card"><h3>Cold email capacity <span class="tag EST">ESTIMATE</span></h3>${CAP.secondary_domains ?
+     `<div class="kpi"><div class="v">${fmt(CAP.monthly_low)}–${fmt(CAP.monthly_high)}</div><div class="l">emails / month the lookalike domains could carry</div></div>
+      <p class="small muted">${CAP.secondary_domains} lookalike domains × ${CAP.assumptions.inboxes_per_domain.join('–')} inboxes × ${CAP.assumptions.sends_per_inbox_per_day.join('–')} sends/day × ${CAP.assumptions.sending_days_per_month} days. Capacity, not observed volume.</p>` :
+     '<p class="muted">No lookalike sending domains found. Outbound, if any, runs from the main domain or from domains that do not redirect.</p>'}
+     <h3 style="margin-top:12px">Mail stack</h3>${chips([N.mailbox_provider && 'Mailbox: <b>'+esc(N.mailbox_provider)+'</b>', ...(N.spf_senders||[]).map(s=>'SPF: '+esc(s)), N.dmarc ? 'DMARC: <b>'+esc((N.dmarc.match(/p=(\w+)/)||[])[1]||'set')+'</b>' : 'DMARC: none'].filter(Boolean))}</div></div>`);
+// 5 Stack
+const cat = {}; Object.entries(P.tools||{}).forEach(([t,i]) => (cat[i.category] = cat[i.category] || []).push(t));
+add('stack', 'Tool stack', 'Read off DNS verification records, page source and the network calls the public site makes.',
+  `<div class="grid2"><div class="card"><h3>From DNS records</h3>${chips((N.tools_from_txt||[]).map(esc))}</div>
+   <div class="card"><h3>From page source & network</h3>${Object.entries(cat).map(([c,ts])=>`<div class="small muted" style="margin:6px 0 4px">${esc(c)}</div>${chips(ts.map(esc))}`).join('') || chips([])}
+   ${(WEB.experiment_vendors||[]).length ? `<div class="small muted" style="margin:10px 0 4px">experimentation</div>${chips(WEB.experiment_vendors.map(esc))}` : ''}</div></div>
+   ${Object.keys(WEB.analytics_events||{}).length || Object.keys(WEB.feature_flags||{}).length ? `<div class="grid2" style="margin-top:14px">
+     <div class="card"><h3>Analytics events in public JS</h3>${chips(Object.keys(WEB.analytics_events||{}).slice(0,40).map(e=>`<span class="mono">${esc(e)}</span>`))}</div>
+     <div class="card"><h3>Feature flags / experiments in public JS</h3>${chips(Object.keys(WEB.feature_flags||{}).slice(0,40).map(e=>`<span class="mono">${esc(e)}</span>`))}</div></div>` : ''}`);
+// 6 Content & SEO
+add('content', 'Content & SEO engine', `${fmt(S.url_count)} URLs across ${fmt(S.sitemaps_read)} sitemaps.`,
+  `<div class="grid2"><div class="card"><h3>Pages by folder</h3>${bars(Object.fromEntries(Object.entries(S.top_folders||{}).slice(0,12)))}</div>
+   <div class="card"><h3>Who they attack with comparison pages</h3>${chips(Object.entries(S.comparison_targets||{}).slice(0,30).map(([k,v])=>`${esc(k)} <b>${v}</b>`))}
+   <h3 style="margin-top:14px">Page intent</h3>${bars(Object.fromEntries(Object.entries(S.intent_counts||{}).filter(([,v])=>v>0)))}
+   ${Object.keys(S.locales||{}).length ? `<h3 style="margin-top:14px">Languages</h3>${chips(Object.entries(S.locales).map(([k,v])=>`${esc(k)} <b>${v}</b>`))}` : ''}</div></div>`);
+// 7 Positioning timeline
+add('positioning', 'Positioning time machine', 'Homepage headline, first capture of each year (Internet Archive).',
+  `<div class="card"><div class="timeline">${(W.headline_changes||[]).map(c=>`<div class="tl"><div class="y">${esc(c.year)}</div><div><b>${esc(c.to)}</b></div><div class="small muted">was: ${esc(c.from)} · <a href="${esc(c.url)}" target="_blank" rel="noopener">archive</a></div></div>`).join('') || '<p class="muted">No headline changes captured.</p>'}</div>
+   ${(W.price_moves||[]).length ? `<h3>Price moves</h3>${W.price_moves.map(p=>`<p class="small">${esc(p.year)}: cheapest paid price ${p.from} → <b>${p.to}</b> <a href="${esc(p.url)}" target="_blank" rel="noopener">archive</a></p>`).join('')}` : ''}
+   ${(W.limitations||[]).map(l=>`<p class="small muted">⚠ ${esc(l)}</p>`).join('')}</div>`);
+// 8 Battlecard
+if (A.battlecard) { const B = A.battlecard;
+  add('battlecard', 'Battlecard', 'For your reps, the week this report lands.',
+   `<div class="bc"><div class="card"><h3>They win when</h3><ul>${(B.they_win_when||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <div class="card"><h3>They lose when</h3><ul>${(B.they_lose_when||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <div class="card"><h3>Landmines to plant</h3><ul>${(B.landmines||[]).map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>
+    <div class="card"><h3>Objections</h3>${(B.objections||[]).map(o=>`<p><b>"${esc(o.q)}"</b><br><span class="muted">${esc(o.a)}</span></p>`).join('')}</div></div>`); }
+// 9 Leak score
+add('leak', 'GTM leak score', 'How much of the go-to-market this company exposes publicly. Run it on yourself.',
+  `<div class="card"><div class="gauge"><div class="kpi"><div class="v">${LS.score ?? '–'}<span class="muted" style="font-size:16px">/100</span></div><div class="l">leak score</div></div></div>
+   <div class="tbl"><table><thead><tr><th>Exposure</th><th>Points</th><th>Fix</th></tr></thead><tbody>${(LS.breakdown||[]).map(b=>`<tr><td>${esc(b.item)}</td><td class="mono">${b.points}/${b.of}</td><td class="small muted">${esc(b.fix)}</td></tr>`).join('')}</tbody></table></div></div>`);
+// 10 Unknowns
+const unk = [...(A.unknowns||[]), ...(WEB.limitations||[])];
+add('unknowns', 'Unknowns & limits', 'What this report cannot see, and the next probe for each.',
+  `<div class="card"><ul>${unk.map(u=>`<li>${esc(typeof u === 'string' ? u : u.text + (u.next_probe ? ' → next probe: ' + u.next_probe : ''))}</li>`).join('')}</ul></div>`);
+// 11 Evidence ledger
+add('ledger', 'Evidence ledger', `${L.length} rows. Every number above traces to one of these.`,
+  `<div class="card"><div class="filters"><input class="search" id="q" placeholder="Filter claims…">
+   <button class="pill" data-k="">All</button><button class="pill" data-k="SEEN">SEEN</button><button class="pill" data-k="INFERRED">INFERRED</button></div>
+   <div class="tbl"><table><thead><tr><th>Kind</th><th>Module</th><th>Claim</th><th>Source</th></tr></thead><tbody id="lrows"></tbody></table></div></div>`);
+
+$('#sections').innerHTML = secs.map((s,i)=>`<section id="${s.id}"><h2><span class="n">${String(i+1).padStart(2,'0')}</span>${esc(s.title)}</h2><p class="sub">${s.sub}</p>${s.html}</section>`).join('');
+$('#toc').innerHTML = secs.map(s=>`<a href="#${s.id}">${esc(s.title)}</a>`).join('');
+
+const srcLink = u => /^https?:/.test(u) ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(u.replace(/^https?:\/\//,'').slice(0,60))}</a>` : `<span class="mono small">${esc(u)}</span>`;
+let kindF = '';
+const drawL = () => { const q = ($('#q').value||'').toLowerCase();
+  $('#lrows').innerHTML = L.filter(r => (!kindF || r.kind === kindF) && (!q || (r.claim+r.module).toLowerCase().includes(q)))
+    .map(r=>`<tr><td><span class="tag ${r.kind}">${r.kind}</span></td><td class="small muted">${esc(r.module)}</td><td>${esc(r.claim)}</td><td class="small">${srcLink(r.source_url)}</td></tr>`).join(''); };
+$('#q').oninput = drawL; document.querySelectorAll('[data-k]').forEach(b => b.onclick = () => { kindF = b.dataset.k; drawL(); }); drawL();
+document.addEventListener('click', e => { const t = e.target.closest('.ev'); const dr = $('#drawer');
+  if (t) { const r = byId[t.dataset.ev]; dr.innerHTML = `<div style="display:flex;justify-content:space-between"><span class="tag ${r.kind}">${r.kind}</span><button class="pill" onclick="this.closest('.drawer').classList.remove('on')">close</button></div>
+    <p><b>${esc(r.claim)}</b></p><p class="small">Source: ${srcLink(r.source_url)}</p><p class="small muted">Method: ${esc(r.method)} · confidence ${r.confidence} · ${esc(r.collected_at)}</p>`; dr.classList.add('on'); } });
+
+// social cards (?cards=1)
+const C = A.cards || [
+  {kicker: 'GTM X-RAY · ' + F.domain, big: fmt(H.open_roles), h: 'open roles. ' + Math.round((H.gtm_share||0)*100) + '% of them sell or market.', s: 'Read off their public job feed.'},
+  {kicker: 'OUTBOUND FORENSICS', big: fmt((O.owned_sending_domains||[]).length), h: 'hidden sending domains pointed back at ' + F.domain, s: (O.owned_sending_domains||[]).map(o=>o.domain).join(' · ')},
+  {kicker: 'GTM LEAK SCORE', big: (LS.score ?? 0) + '/100', h: F.domain + ' leaks this much of its go-to-market in public.', s: 'What does yours leak?'},
+];
+$('#cards').innerHTML = C.map((c,i)=>`<div class="social" id="card-${i+1}"><div class="k">${esc(c.kicker)}</div>${c.big?`<div class="big">${esc(c.big)}</div>`:''}<div class="h">${esc(c.h)}</div>${c.s?`<div class="s">${esc(c.s)}</div>`:''}
+  ${c.rows?`<div class="rows">${c.rows.map(r=>`<div>${r}</div>`).join('')}</div>`:''}<div class="foot"><span>GTM X-Ray</span><span>${esc(F.domain)} · public data only</span></div></div>`).join('');
+if (new URLSearchParams(location.search).get('cards')) document.body.classList.add('cardmode');
+</script>
+</body>
+</html>

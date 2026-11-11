@@ -1,0 +1,34 @@
+[project]
+name = "gtm-xray"
+version = "0.1.0"
+description = "Reverse-engineer any company's go-to-market from public data, then turn it into a plan to win their customers. Built for Claude Code + Claude Fable 5.2."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+  "httpx>=0.27",
+  "dnspython>=2.6",
+  "selectolax>=1.0",
+  "pyyaml>=6.0",
+  "mcp>=1.2",
+]
+
+[project.optional-dependencies]
+render = ["playwright>=1.45"]
+
+[project.scripts]
+xray = "gtmxray.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8.2", "respx>=0.21"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/gtmxray"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = ["live: hits the real network (deselect with -m 'not live')"]

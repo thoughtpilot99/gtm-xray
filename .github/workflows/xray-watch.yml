@@ -1,0 +1,46 @@
+name: GTM X-Ray weekly watch
+
+# Every Monday: re-collect each watched competitor, diff vs last week, post the changes to Slack,
+# and (optionally) let Claude explain them. Commit the runs so next week has a baseline.
+on:
+  schedule:
+    - cron: "0 7 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    env:
+      WATCH: ${{ vars.XRAY_WATCH }}               # e.g. "competitor-a.com competitor-b.com"
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+      - run: uv sync
+      - name: Collect + diff
+        run: |
+          for d in $WATCH; do
+            uv run xray collect "$d"
+            uv run xray diff "$d" > "runs/$d/latest-diff.json"
+            if [ -n "$SLACK_WEBHOOK_URL" ]; then uv run xray notify "$d"; fi
+          done
+      - name: Explain changes with Claude Fable 5.2 (optional)
+        if: env.ANTHROPIC_API_KEY != ''
+        run: |
+          npm install -g @anthropic-ai/claude-code
+          for d in $WATCH; do
+            claude -p --model claude-fable-5-2 --allowedTools "Read,Bash(uv run xray *)" \
+              "Read runs/$d/latest-diff.json. In under 120 words, explain what changed in $d's go-to-market this week and what a competitor should do about it. Cite numbers only from the file." \
+              > "runs/$d/latest-brief.md"
+          done
+      - name: Commit runs
+        run: |
+          git config user.name "gtm-xray-bot"
+          git config user.email "gtm-xray-bot@users.noreply.github.com"
+          git add runs
+          git commit -m "watch: $(date -u +%F)" || echo "no changes"
+          git push

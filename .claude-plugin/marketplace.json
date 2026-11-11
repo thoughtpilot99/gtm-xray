@@ -1,0 +1,11 @@
+{
+  "name": "gtm-xray",
+  "owner": { "name": "ColdIQ" },
+  "plugins": [
+    {
+      "name": "gtm-xray",
+      "source": "./",
+      "description": "Reverse-engineer any company's go-to-market from public data and get the attack plan."
+    }
+  ]
+}

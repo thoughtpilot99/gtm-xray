@@ -1,0 +1,148 @@
+# Public fingerprints. Each pattern is matched against public DNS records or public page source.
+# A match proves someone connected or embedded the tool. It does not prove they still use it heavily.
+# Add a tool: PRs welcome. Keep only patterns you can point to on a real site.
+
+dns_txt:            # substring in a TXT record -> tool
+  "google-site-verification": Google Search Console
+  "MS=ms": Microsoft 365
+  "facebook-domain-verification": Meta Business
+  "atlassian-domain-verification": Atlassian
+  "docusign=": DocuSign
+  "adobe-idp-site-verification": Adobe
+  "apple-domain-verification": Apple Business
+  "stripe-verification": Stripe
+  "ZOOM_verify_": Zoom
+  "slack-domain-verification": Slack
+  "miro-verification": Miro
+  "canva-site-verification": Canva
+  "openai-domain-verification": OpenAI
+  "anthropic-domain-verification": Anthropic
+  "onetrust-domain-verification": OneTrust
+  "dropbox-domain-verification": Dropbox
+  "globalsign-domain-verification": GlobalSign
+  "klaviyo-site-verification": Klaviyo
+  "yandex-verification": Yandex
+  "h1-domain-verification": HackerOne
+  "cisco-ci-domain-verification": Webex
+  "postman-domain-verification": Postman
+  "twilio-domain-verification": Twilio
+  "hubspot-developer-verification": HubSpot
+  "pardot": Salesforce Pardot
+  "logmein-verification-code": GoTo
+
+spf_include:        # substring in an SPF include -> sending service
+  "_spf.google.com": Google Workspace
+  "spf.protection.outlook.com": Microsoft 365
+  "sendgrid.net": SendGrid
+  "mailgun.org": Mailgun
+  "amazonses.com": Amazon SES
+  "servers.mcsv.net": Mailchimp
+  "_spf.salesforce.com": Salesforce
+  "mktomail.com": Marketo
+  "hubspotemail.net": HubSpot
+  "mandrillapp.com": Mandrill
+  "mail.zendesk.com": Zendesk
+  "intercom": Intercom
+  "customeriomail.com": Customer.io
+  "spf.mtasv.net": Postmark
+  "sparkpostmail.com": SparkPost
+  "email.freshdesk.com": Freshdesk
+  "helpscoutemail.com": Help Scout
+  "spf.mailjet.com": Mailjet
+  "sendinblue.com": Brevo
+  "brevo.com": Brevo
+  "aspmx.pardot.com": Salesforce Pardot
+  "zoho": Zoho Mail
+  "firebasemail.com": Firebase
+  "smtp2go.com": SMTP2GO
+
+mx:                 # substring in an MX host -> mailbox provider
+  "google.com": Google Workspace
+  "googlemail.com": Google Workspace
+  "outlook.com": Microsoft 365
+  "pphosted.com": Proofpoint
+  "mimecast.com": Mimecast
+  "zoho": Zoho Mail
+  "secureserver.net": GoDaddy
+  "messagingengine.com": Fastmail
+  "barracudanetworks.com": Barracuda
+
+tracking_cname:     # CNAME target on a tracking subdomain -> cold email tool
+  "prox.itrackly.com": Instantly
+  "sleadtrack.com": Smartlead
+  "custom.lemlist.com": lemlist
+
+page_source:        # substring in homepage / pricing HTML -> tool, category
+  "js.hs-scripts.com": [HubSpot, marketing-automation]
+  "js.hsforms.net": [HubSpot, marketing-automation]
+  "munchkin.marketo.net": [Marketo, marketing-automation]
+  "pi.pardot.com": [Salesforce Pardot, marketing-automation]
+  "cdn.segment.com": [Segment, data]
+  "googletagmanager.com/gtm.js": [Google Tag Manager, analytics]
+  "googletagmanager.com/gtag": [Google Analytics 4, analytics]
+  "widget.intercom.io": [Intercom, chat]
+  "js.intercomcdn.com": [Intercom, chat]
+  "js.driftt.com": [Drift, chat]
+  "js.qualified.com": [Qualified, chat]
+  "client.crisp.chat": [Crisp, chat]
+  "static.zdassets.com": [Zendesk, support]
+  "js.chilipiper.com": [Chili Piper, meeting-routing]
+  "assets.calendly.com": [Calendly, meeting-routing]
+  "navattic": [Navattic, interactive-demo]
+  "storylane": [Storylane, interactive-demo]
+  "tag.clearbitscripts.com": [Clearbit Reveal, visitor-id]
+  "j.6sc.co": [6sense, abm]
+  "tag.demandbase.com": [Demandbase, abm]
+  "rb2b": [RB2B, visitor-id]
+  "cdn.vector.co": [Vector, visitor-id]
+  "getwarmly": [Warmly, visitor-id]
+  "getkoala.com": [Koala, visitor-id]
+  "cr-relay.com": [Common Room, visitor-id]
+  "assets.apollo.io/micro/website-tracker": [Apollo, visitor-id]
+  "ws.zoominfo.com": [ZoomInfo WebSights, visitor-id]
+  "lfeeder.com": [Dealfront (Leadfeeder), visitor-id]
+  "serve.albacross.com": [Albacross, visitor-id]
+  "app.factors.ai": [Factors.ai, visitor-id]
+  "static.reo.dev": [Reo.dev, visitor-id]
+  "mutinycdn": [Mutiny, personalization]
+  "cdn.dreamdata.cloud": [Dreamdata, attribution]
+  "hockeystack": [HockeyStack, attribution]
+  "snap.licdn.com": [LinkedIn Insight Tag, paid-ads]
+  "connect.facebook.net": [Meta Pixel, paid-ads]
+  "redditstatic.com/ads": [Reddit Pixel, paid-ads]
+  "static.ads-twitter.com": [X Pixel, paid-ads]
+  "googleadservices.com": [Google Ads, paid-ads]
+  "bat.bing.com": [Microsoft Ads, paid-ads]
+  "analytics.tiktok.com": [TikTok Pixel, paid-ads]
+  "static.hotjar.com": [Hotjar, product-analytics]
+  "fullstory.com": [FullStory, product-analytics]
+  "cdn.mxpnl.com": [Mixpanel, product-analytics]
+  "cdn.amplitude.com": [Amplitude, product-analytics]
+  "posthog": [PostHog, product-analytics]
+  "cdn.heapanalytics.com": [Heap, product-analytics]
+  "/_vercel/insights": [Vercel Analytics, product-analytics]
+  "data-wf-site": [Webflow, cms]
+  "framerusercontent.com": [Framer, cms]
+  "/_next/": [Next.js, framework]
+  "wp-content": [WordPress, cms]
+  "ctfassets.net": [Contentful, cms]
+  "cdn.sanity.io": [Sanity, cms]
+  "js.stripe.com": [Stripe, billing]
+  "embed.typeform.com": [Typeform, forms]
+  "consent.cookiebot.com": [Cookiebot, consent]
+  "cdn.cookielaw.org": [OneTrust, consent]
+
+ats:                # careers link pattern -> ATS
+  greenhouse: ['boards\.greenhouse\.io/(?:embed/job_board\?for=)?([A-Za-z0-9_-]+)', 'job-boards\.(?:eu\.)?greenhouse\.io/([A-Za-z0-9_-]+)']
+  lever: ['jobs\.(?:eu\.)?lever\.co/([A-Za-z0-9_.-]+)']
+  ashby: ['jobs\.ashbyhq\.com/([A-Za-z0-9_.%-]+)']
+  workable: ['apply\.workable\.com/([A-Za-z0-9_-]+)']
+  smartrecruiters: ['(?:jobs|careers)\.smartrecruiters\.com/([A-Za-z0-9_-]+)']
+
+# Tools a job description can name. Used to read a company's internal stack off its own job posts,
+# and to find OTHER companies that use a competitor (the Displacement Engine).
+jd_tools: [Salesforce, HubSpot, Outreach, Salesloft, Apollo, Gong, Chorus, Clari, Clay, ZoomInfo,
+  Sales Navigator, LinkedIn Sales Navigator, Instantly, Smartlead, lemlist, HeyReach, Marketo, Pardot,
+  Segment, Snowflake, dbt, Looker, Tableau, Amplitude, Mixpanel, Intercom, Zendesk, Gainsight,
+  Vitally, Chili Piper, 6sense, Demandbase, Clearbit, Common Room, Unify, Attio, Pipedrive,
+  Notion, Linear, Jira, Figma, Webflow, Retool, n8n, Zapier, Make.com, Claude, ChatGPT, Cursor, Lovable, Bolt]

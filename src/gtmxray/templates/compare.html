@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GTM X-Ray Compare</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f9;--panel:#fff;--ink:#0d1117;--muted:#5b6472;--line:#e3e6eb;--c1:#0891b2;--c2:#7c3aed;--c3:#ea580c;--c4:#059669;--c5:#db2777}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#07090d;--panel:#0e131a;--ink:#e8edf3;--muted:#8b97a7;--line:#1e2733;--c1:#22d3ee;--c2:#a78bfa;--c3:#fb923c;--c4:#34d399;--c5:#f472b6}}
+:root[data-theme="dark"]{--bg:#07090d;--panel:#0e131a;--ink:#e8edf3;--muted:#8b97a7;--line:#1e2733;--c1:#22d3ee;--c2:#a78bfa;--c3:#fb923c;--c4:#34d399;--c5:#f472b6}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,sans-serif}
+.wrap{max-width:1180px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:clamp(26px,4vw,40px);letter-spacing:-.02em;margin:0 0 6px}
+.muted{color:var(--muted)} .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px;margin-top:16px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px} th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td.num{font-family:"JetBrains Mono",monospace} .win{font-weight:800}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px} .sw{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.chip{display:inline-block;font-size:12px;padding:2px 7px;margin:2px;border:1px solid var(--line);border-radius:7px}
+</style></head><body><div class="wrap">
+<div class="muted" style="font:600 12px 'JetBrains Mono';letter-spacing:.1em">GTM X-RAY · COMPARE</div>
+<h1 id="t"></h1><p class="muted">Public data only. Bold = leader on that row.</p>
+<div class="card" style="display:flex;gap:24px;flex-wrap:wrap;align-items:center"><svg id="radar" width="380" height="340" viewBox="0 0 380 340"></svg><div class="legend" id="lg"></div></div>
+<div class="card"><table id="tbl"></table></div>
+</div>
+<script id="data" type="application/json">__DATA__</script>
+<script>
+const R = JSON.parse(document.getElementById('data').textContent);
+const cols = ['--c1','--c2','--c3','--c4','--c5'];
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+document.getElementById('t').textContent = R.map(r => r.domain).join(' vs ');
+const rows = [
+  ['Open roles', r => r.open_roles], ['% of hiring in sales + marketing', r => Math.round(r.gtm_share*100)],
+  ['Enterprise-titled roles', r => r.enterprise_roles], ['AEs', r => r.sales_roles['AE']||0], ['SDR/BDRs', r => r.sales_roles['SDR/BDR']||0],
+  ['Cold email domains (wired lookalikes)', r => r.sending_domains], ['Cold email capacity / mo (estimate, high)', r => r.capacity_high],
+  ['Sitemap URLs', r => r.sitemap_urls], ['Comparison pages', r => r.comparison_pages], ['Integration pages', r => r.integrations],
+  ['GTM leak score', r => r.leak],
+];
+let h = '<tr><th></th>' + R.map(r => `<th>${esc(r.domain)}</th>`).join('') + '</tr>';
+rows.forEach(([l, f]) => { const v = R.map(f), m = Math.max(...v);
+  h += `<tr><td>${l}</td>` + v.map(x => `<td class="num ${x===m && m>0 ? 'win':''}">${(x||0).toLocaleString('en-US')}</td>`).join('') + '</tr>'; });
+h += '<tr><td>Cold email tool</td>' + R.map(r => `<td>${esc((r.sending_tools||[]).join(', ') || '-')}</td>`).join('') + '</tr>';
+h += '<tr><td>Website motion</td>' + R.map(r => `<td>${esc(r.motion_lean)}</td>`).join('') + '</tr>';
+h += '<tr><td>GTM hiring by region</td>' + R.map(r => `<td>${Object.entries(r.gtm_by_region||{}).map(([k,v])=>`<span class="chip">${esc(k)} ${v}</span>`).join('')}</td>`).join('') + '</tr>';
+h += '<tr><td>Rivals they target</td>' + R.map(r => `<td>${r.comparison_targets.map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</td>`).join('') + '</tr>';
+h += '<tr><td>Tools fingerprinted</td>' + R.map(r => `<td>${r.tools.slice(0,18).map(x=>`<span class="chip">${esc(x)}</span>`).join('')}</td>`).join('') + '</tr>';
+document.getElementById('tbl').innerHTML = h;
+const keys = Object.keys(R[0]?.radar || {}), cx=190, cy=170, rad=120, n=keys.length;
+const pt = (i,v) => { const a=-Math.PI/2+i*2*Math.PI/n; return [cx+Math.cos(a)*rad*v/100, cy+Math.sin(a)*rad*v/100]; };
+let g=''; [25,50,75,100].forEach(v => g += `<polygon points="${keys.map((_,i)=>pt(i,v).join(',')).join(' ')}" fill="none" stroke="var(--line)"/>`);
+keys.forEach((k,i) => { const [x,y]=pt(i,122); g += `<text x="${x}" y="${y}" fill="var(--muted)" font-size="11" text-anchor="middle" dominant-baseline="middle">${esc(k)}</text>`; });
+R.forEach((r,j) => g += `<polygon points="${keys.map((k,i)=>pt(i,Math.max(r.radar[k],3)).join(',')).join(' ')}" fill="var(${cols[j%5]})" fill-opacity=".12" stroke="var(${cols[j%5]})" stroke-width="2"/>`);
+document.getElementById('radar').innerHTML = g;
+document.getElementById('lg').innerHTML = R.map((r,j) => `<span><span class="sw" style="background:var(${cols[j%5]})"></span>${esc(r.domain)}</span>`).join('');
+</script></body></html>
