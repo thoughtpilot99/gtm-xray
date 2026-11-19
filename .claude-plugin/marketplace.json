@@ -1,6 +1,9 @@
 {
   "name": "gtm-xray",
-  "owner": { "name": "ColdIQ" },
+  "owner": {
+    "name": "Frontal",
+    "url": "https://frontal.so"
+  },
   "plugins": [
     {
       "name": "gtm-xray",

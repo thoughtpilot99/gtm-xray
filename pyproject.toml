@@ -3,6 +3,7 @@ name = "gtm-xray"
 version = "0.1.0"
 description = "Reverse-engineer any company's go-to-market from public data, then turn it into a plan to win their customers. Built for Claude Code + Claude Fable 5.2."
 readme = "README.md"
+authors = [{ name = "Frontal" }]
 requires-python = ">=3.12"
 license = { text = "MIT" }
 dependencies = [
@@ -32,3 +33,7 @@ packages = ["src/gtmxray"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 markers = ["live: hits the real network (deselect with -m 'not live')"]
+
+[project.urls]
+Homepage = "https://frontal.so"
+Repository = "https://github.com/thoughtpilot99/gtm-xray"

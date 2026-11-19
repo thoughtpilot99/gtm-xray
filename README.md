@@ -6,6 +6,8 @@
 
 **12 Claude Fable 5.2 agents · 8 collectors · zero API keys · every claim linked to its public source**
 
+Built by **[Frontal](https://frontal.so)**: we help B2B companies build pipeline.
+
 [Why](#why-this-exists) · [What a run gives you](#what-a-run-gives-you) · [Features](#features) · [Setup](#setup) · [Use it](#use-it) · [How it works](#how-it-works) · [vs the market](#how-it-compares) · [Limits](docs/LIMITATIONS.md)
 
 
@@ -219,10 +221,18 @@ No logins, no form submissions, no private APIs, no personal data beyond what a 
 roles. HAR analysis is for captures of your own sessions. People's names are filtered out of account lists.
 See [DISCLAIMER.md](DISCLAIMER.md), [SECURITY.md](SECURITY.md) and [docs/LIMITATIONS.md](docs/LIMITATIONS.md).
 
+## Built by Frontal
+
+GTM X-Ray is made and maintained by **[Frontal](https://frontal.so)**.
+
+Frontal helps B2B companies build pipeline. We build the system that grows it inside the tools you already use, so you own it, and we can run it for you across outbound, ads and content. GTM X-Ray is the kind of research we do before building that system: who your competitors sell to, how they reach them, and which of their customers you can win.
+
+Want the plan run for you, not just the report? **[Talk to Frontal at frontal.so](https://frontal.so)**.
+
 ## Contributing
 
 Fingerprints, ATS adapters, sharper agent prompts and voice packs are the most useful PRs. See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## License
 
-MIT licensed. See [LICENSE](LICENSE).
+MIT licensed, © 2026 [Frontal](https://frontal.so). See [LICENSE](LICENSE).

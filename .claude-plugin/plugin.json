@@ -2,15 +2,31 @@
   "name": "gtm-xray",
   "version": "0.1.0",
   "description": "Reverse-engineer any company's go-to-market from public data, then turn it into a plan to win their customers. 12 Claude Fable 5.2 agents, 8 commands, evidence on every claim.",
-  "author": { "name": "ColdIQ" },
-  "homepage": "https://github.com/thoughtpilot99/gtm-xray",
+  "author": {
+    "name": "Frontal",
+    "url": "https://frontal.so"
+  },
+  "homepage": "https://frontal.so",
   "repository": "https://github.com/thoughtpilot99/gtm-xray",
   "license": "MIT",
-  "keywords": ["gtm", "competitive-intelligence", "outbound", "sales", "clay", "reverse-engineering"],
+  "keywords": [
+    "gtm",
+    "competitive-intelligence",
+    "outbound",
+    "sales",
+    "clay",
+    "reverse-engineering"
+  ],
   "mcpServers": {
     "gtm-xray": {
       "command": "uv",
-      "args": ["run", "--project", "${CLAUDE_PLUGIN_ROOT}", "xray", "mcp"]
+      "args": [
+        "run",
+        "--project",
+        "${CLAUDE_PLUGIN_ROOT}",
+        "xray",
+        "mcp"
+      ]
     }
   }
 }

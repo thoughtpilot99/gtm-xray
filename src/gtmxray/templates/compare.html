@@ -50,4 +50,6 @@ keys.forEach((k,i) => { const [x,y]=pt(i,122); g += `<text x="${x}" y="${y}" fil
 R.forEach((r,j) => g += `<polygon points="${keys.map((k,i)=>pt(i,Math.max(r.radar[k],3)).join(',')).join(' ')}" fill="var(${cols[j%5]})" fill-opacity=".12" stroke="var(${cols[j%5]})" stroke-width="2"/>`);
 document.getElementById('radar').innerHTML = g;
 document.getElementById('lg').innerHTML = R.map((r,j) => `<span><span class="sw" style="background:var(${cols[j%5]})"></span>${esc(r.domain)}</span>`).join('');
-</script></body></html>
+</script>
+<footer style="margin:40px 0 10px;color:var(--muted);font-size:12px;border-top:1px solid var(--line);padding-top:14px">Built with <b>GTM X-Ray</b> by <a href="https://frontal.so" target="_blank" rel="noopener">Frontal</a>, who help B2B companies build pipeline. <a href="https://frontal.so" target="_blank" rel="noopener">frontal.so</a></footer>
+</body></html>
